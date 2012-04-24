@@ -22,12 +22,13 @@ args_string = mystrcat(args_string,' ',add_double_quotes(prediction_data_locatio
 args_string = mystrcat(args_string,' ',add_double_quotes(output_location));
 args_string = mystrcat(args_string,' ',add_double_quotes(network_location));
 
-shell_string = mystrcat('start python',' ',add_double_quotes(script_path),' ',args_string);
+  shell_string = mystrcat('start python',' ',add_double_quotes(script_path),' ',args_string);
+%  shell_string = mystrcat('python',' ',add_double_quotes(script_path),' ',args_string);
 
 global cache_cmd;
 cache_cmd = shell_string;
 
-[status,result] = system(shell_string,'-echo') 
+[status,result] = system(shell_string,'-echo');
 
 
 end

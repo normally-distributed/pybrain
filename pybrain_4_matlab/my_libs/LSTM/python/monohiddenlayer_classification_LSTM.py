@@ -99,6 +99,9 @@ def train_network(options_file_location,training_data_location,output_location):
     
     training_dataset._convertToOneOfMany();
     
+    print str(network)
+    print str(training_dataset)
+    
     trainer = RPropMinusTrainer(module=network, dataset=training_dataset)
 
     for i in range(num_training_epochs):
@@ -108,6 +111,10 @@ def train_network(options_file_location,training_data_location,output_location):
     
     network_file_location = output_location+'trained_network.xml'
     NetworkWriter.writeToFile(network, network_file_location)
+    
+    done_file_handle = open(output_location+'training_done.txt',"w")
+    done_file_handle.write('%s' % 'done!')
+    done_file_handle.close()
 
     
 def network_predict(options_file_location,prediction_data_location,output_location,network_location):
@@ -182,9 +189,12 @@ def network_predict(options_file_location,prediction_data_location,output_locati
     print 'Accuracy: '+str(accuracy)
         
     results_length = results.shape
-    for i in range(results_length[0]):
-        prediction_results_file_handle.write('%s ' % str(results[i]).replace('[','').replace(']',''))
-        prediction_results_file_handle.write('%s\n' % str(targets[i]).replace('[','').replace(']',''))
+    
+    np.savetxt(prediction_results_file_location,results,delimiter=" ",fmt='%5.5f')
+    
+    done_file_handle = open(output_location+'predicting_done.txt',"w")
+    done_file_handle.write('%s' % 'done!')
+    done_file_handle.close()
 
         
 if __name__ == '__main__':

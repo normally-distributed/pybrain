@@ -53,7 +53,8 @@ def train_network(options_file_location,training_data_location,output_location):
     num_training_epochs = int(options_dictionary['num_training_epochs'])
     num_hidden_neurons = int(options_dictionary['num_hidden_neurons'])
     compound_prediction = int(options_dictionary['compound_prediction'])
-    teacher_forced_transient = int(options_dictionary['teacher_forced_transient'])
+    #teacher_forced_transient = int(options_dictionary['teacher_forced_transient'])
+    teacher_forced_transient = 0
     hidden_neuron_type_str = options_dictionary['hidden_neuron_type']
     output_neuron_type_str = options_dictionary['output_neuron_type']
     
@@ -104,6 +105,9 @@ def train_network(options_file_location,training_data_location,output_location):
     #brittle
     network_file_path = output_location+'trained_network.xml'
     NetworkWriter.writeToFile(network, network_file_path)
+    done_file_handle = open(output_location+'training_done.txt',"w")
+    done_file_handle.write('%s' % 'done!')
+    done_file_handle.close()
 
 def network_predict(options_file_location,prediction_data_location,output_location,network_location):
 
@@ -133,7 +137,8 @@ def network_predict(options_file_location,prediction_data_location,output_locati
     num_training_epochs = int(options_dictionary['num_training_epochs'])
     num_hidden_neurons = int(options_dictionary['num_hidden_neurons'])
     compound_prediction = int(options_dictionary['compound_prediction'])
-    teacher_forced_transient = int(options_dictionary['teacher_forced_transient'])
+    # teacher_forced_transient = int(options_dictionary['teacher_forced_transient'])
+    teacher_forced_transient = 0
     
     prediction_dataset = SequentialDataSet(num_predictors, num_outputs)
     
@@ -174,9 +179,12 @@ def network_predict(options_file_location,prediction_data_location,output_locati
         results, targets, mse = evalRNN.compoundEvalRNNOnSeqDataset(network,prediction_dataset, teacher_forced_transient)
                 
     results_length, results_width = results.shape
-    for i in range(results_length):
-        prediction_results_file_handle.write('%s ;' % str(results[i]).replace('[','').replace(']',''))
-        prediction_results_file_handle.write('%s\n' % str(targets[i]).replace('[','').replace(']',''))
+ 
+    np.savetxt(prediction_results_file_location,results,delimiter=" ",fmt='%9.9f')
+    
+    done_file_handle = open(output_location+'predicting_done.txt',"w")
+    done_file_handle.write('%s' % 'done!')
+    done_file_handle.close()
     
 
 if __name__ == '__main__':
